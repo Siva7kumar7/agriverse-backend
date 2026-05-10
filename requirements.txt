@@ -1,0 +1,35 @@
+# Core Dependencies
+flask==3.0.0
+flask-cors==4.0.0
+python-dotenv==1.0.0
+flask
+flask-pymongo
+flask-bcrypt
+flask-jwt-extended
+python-dotenv
+
+
+# Data Processing
+pandas==2.1.4
+numpy==1.24.3
+
+# Machine Learning
+scikit-learn==1.3.2
+joblib==1.3.2
+# TensorFlow - Use tensorflow-cpu on Windows if DLL errors occur
+# For Windows: pip install tensorflow-cpu==2.15.0
+# For Linux/Mac or if you have GPU: pip install tensorflow==2.15.0
+tensorflow-cpu==2.15.0
+
+# Image Processing
+opencv-python==4.8.1.78
+Pillow==10.1.0
+
+# Utilities
+python-dateutil==2.8.2
+pyttsx3==2.90
+requests==2.31.0
+
+# API Documentation (Optional)
+flask-swagger-ui==4.11.1
+
