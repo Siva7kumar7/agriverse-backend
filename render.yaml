@@ -1,1 +1,13 @@
-pythonVersion: 3.11.9
+services:
+  - type: web
+    name: agriverse-backend
+    runtime: python
+    pythonVersion: "3.11.9"
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    # ↑ Change "app:app" to your actual file:variable
+    # Flask example:  gunicorn main:app
+    # FastAPI example: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
