@@ -4,7 +4,7 @@ services:
     runtime: python
     pythonVersion: "3.11.9"
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    startCommand: python -m gunicorn --bind 0.0.0.0:$PORT --workers 1 --timeout 120 app:app
     # ↑ Change "app:app" to your actual file:variable
     # Flask example:  gunicorn main:app
     # FastAPI example: uvicorn main:app --host 0.0.0.0 --port $PORT
