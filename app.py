@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 # FLASK APP
 # =====================================================
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 bcrypt = Bcrypt(app)
 
 app.register_blueprint(weather_bp, url_prefix="/api")
