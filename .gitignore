@@ -1,0 +1,16 @@
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.env
+.venv
+env/
+ENV/
+bin/
+lib/
+include/
+uploads/
+*.h5
+*.pkl
+*.joblib
