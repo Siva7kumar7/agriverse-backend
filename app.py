@@ -361,25 +361,36 @@ CLASS_INDICES_PATH = os.path.join(MODEL_DIR, "class_indices.json")
 IMG_SIZE = (224, 224)
 CONF_THRESHOLD = 0.5
 
-# =====================================================
-# LOAD PLANT DISEASE MODELS
-# =====================================================
-logger.info("Loading plant disease models...")
-
-cnn_model = tf.keras.models.load_model(CNN_MODEL_PATH, compile=False)
-svm = joblib.load(SVM_MODEL_PATH)
-scaler = joblib.load(SCALER_PATH)
-
+# Models will be loaded lazily to prevent startup crashes
+cnn_model = None
+svm = None
+scaler = None
 severity_model = None
-if os.path.exists(SEVERITY_MODEL_PATH):
-    severity_model = joblib.load(SEVERITY_MODEL_PATH)
+feature_extractor = None
 
-feature_extractor = tf.keras.Model(
-    inputs=cnn_model.input,
-    outputs=cnn_model.get_layer("feature_layer").output
-)
-
-logger.info("Plant disease models loaded")
+def load_plant_models():
+    global cnn_model, svm, scaler, severity_model, feature_extractor
+    if cnn_model is not None:
+        return True
+    
+    try:
+        logger.info("🌿 Loading plant disease models lazily...")
+        cnn_model = tf.keras.models.load_model(CNN_MODEL_PATH, compile=False)
+        svm = joblib.load(SVM_MODEL_PATH)
+        scaler = joblib.load(SCALER_PATH)
+        
+        if os.path.exists(SEVERITY_MODEL_PATH):
+            severity_model = joblib.load(SEVERITY_MODEL_PATH)
+            
+        feature_extractor = tf.keras.Model(
+            inputs=cnn_model.input,
+            outputs=cnn_model.get_layer("feature_layer").output
+        )
+        logger.info("✅ Plant disease models loaded successfully")
+        return True
+    except Exception as e:
+        logger.error(f"❌ Failed to load plant models: {e}")
+        return False
 
 # =====================================================
 # LOAD JSON DATA
@@ -424,6 +435,9 @@ def health():
 @app.route("/api/plant/detect", methods=["POST"])
 def detect_plant_disease():
     try:
+        if not load_plant_models():
+            return jsonify({"error": "AI Model service is temporarily unavailable"}), 503
+
         if "image" not in request.files:
             return jsonify({"error": "No image uploaded"}), 400
 

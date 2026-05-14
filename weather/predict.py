@@ -14,19 +14,27 @@ MODEL_DIR = os.path.join(BASE_DIR, "models")
 RF_MODEL_PATH = os.path.join(MODEL_DIR, "rain_rf.pkl")
 SCALER_PATH = os.path.join(MODEL_DIR, "scaler.pkl")
 
-rf_model = None
-scaler = None
-
-try:
-    rf_model = joblib.load(RF_MODEL_PATH)
-    scaler = joblib.load(SCALER_PATH)
-    print("✅ ML models loaded")
-except Exception as e:
-    print("❌ Model load error:", e)
+def load_weather_models():
+    global rf_model, scaler
+    if rf_model is not None:
+        return True
+    try:
+        if os.path.exists(RF_MODEL_PATH) and os.path.exists(SCALER_PATH):
+            rf_model = joblib.load(RF_MODEL_PATH)
+            scaler = joblib.load(SCALER_PATH)
+            print("✅ Weather ML models loaded")
+            return True
+        else:
+            print("⚠️ Weather model files missing, skipping ML prediction")
+            return False
+    except Exception as e:
+        print("❌ Weather model load error:", e)
+        return False
 
 
 def predict_rainfall(lat, lon):
     try:
+        load_weather_models()
         weather_data = get_current_weather(lat=lat, lon=lon)
 
         if not weather_data:
